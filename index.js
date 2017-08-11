@@ -25,7 +25,7 @@ app.get('/sensors/get', function (req, res) {
   sensores.Temperature = allData['T'];
   sensores.Humiditiy = allData['H'];
   sensores.Move = allData['M'];
-  res.send(sensores);
+  res.send(JSON.stringify(sensores) + "<meta http-equiv=\"Refresh\" Content=\"1\">");
 });
 
 app.get('/actions/get', function (req, res) {
@@ -33,7 +33,7 @@ app.get('/actions/get', function (req, res) {
   actions['Light1'] = allData['L'];
   actions['Light2'] = allData['l'];
   actions['Fan'] = allData['F'];
-  res.send(actions);
+  res.send(JSON.stringify(actions) + "<meta http-equiv=\"Refresh\" Content=\"1\">");
 });
 
 var server = app.listen(8081, function () {
