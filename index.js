@@ -8,7 +8,7 @@
 var express = require('express');
 var app = express();
 
-var typeRequested = ['S', 'M']; // CIAA protocol communication
+var typeRequested = ['K', 'k', 'T', 'H', 'M', 'L', 'l', 'F'];
 var dataRequested = 0;
 var allData = {};
 
@@ -19,19 +19,21 @@ app.get('/', function (req, res) {
 });
 
 app.get('/sensors/get', function (req, res) {
-/*  var sensores;
-  sensores['Temperature'] = allData[typeRequested[dataRequested]];
-  sensores[typeRequested.MOVE] = allData[typeRequested.MOVE];
-  sensores[typeRequested.HUMIDITY] = allData[typeRequested.HUMIDITY];  */
-  res.send(allData);
+  var sensores = {};
+  sensores.Key2 = allData['k'];
+  sensores.Key1 = allData['K'];
+  sensores.Temperature = allData['T'];
+  sensores.Humiditiy = allData['H'];
+  sensores.Move = allData['M'];
+  res.send(sensores);
 });
 
 app.get('/actions/get', function (req, res) {
- /* var actions;
-  actions[typeRequested.LIGHT1] = allData[typeRequested.LIGHT1];
-  actions[typeRequested.LIGHT2] = allData[typeRequested.LIGHT2];
-  actions[typeRequested.FAN] = allData[typeRequested.FAN];  */
-  res.send(allData);
+  var actions = [];
+  actions['Light1'] = allData['L'];
+  actions['Light2'] = allData['l'];
+  actions['Fan'] = allData['F'];
+  res.send(actions);
 });
 
 var server = app.listen(8081, function () {
@@ -52,8 +54,9 @@ var port = new SerialPort('/dev/ttyUSB1', {
 // Switches the port into "flowing mode" 
 
 port.on('data', function (data) {
-  allData[dataRequested] = data;
-  
+  data = data + '';
+  allData[typeRequested[dataRequested]] = data.substring(2);
+  // todo: decode data
   dataRequested = (typeRequested.length > dataRequested + 1)?dataRequested+1:0;
   requestData();
   console.log('Data:', data);
